@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <a href="URL_ĐƯỜNG_LINK">Nội dung hiển thị</a>
+    <a href="https://www.google.com">Truy cập Google</a>
+    <a href="https://www.google.com" target="_blank">Mở Google ở tab mới</a>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ứng dụng Chuyển đổi Hệ cơ số</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 450px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #5a67d8;
+        }
+        .result-box {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f7fafc;
+            border: 2px dashed #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d3748;
+            word-break: break-all;
+            min-height: 58px;
+        }
+        .error {
+            color: #e53e3e;
+        }
+        .success {
+            color: #38a169;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bộ Chuyển Đổi Hệ Cơ Số</h2>
+    
+    <div class="form-group">
+        <label for="inputType">Chọn kiểu chuyển đổi:</label>
+        <select id="inputType" onchange="onTypeChange()">
+            <option value="binToDec">Nhị phân (2) ➔ Thập phân (10)</option>
+            <option value="decToBin">Thập phân (10) ➔ Nhị phân (2)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label id="inputLabel" for="inputValue">Nhập số nhị phân (chỉ gồm 0 và 1):</label>
+        <input type="text" id="inputValue" placeholder="Ví dụ: 1010">
+    </div>
+
+    <button onclick="convert()">Chuyển Đổi</button>
+
+    <div class="result-box" id="result">
+        Kết quả hiển thị tại đây
+    </div>
+</div>
+
+<script>
+    function onTypeChange() {
+        const type = document.getElementById('inputType').value;
+        const label = document.getElementById('inputLabel');
+        const input = document.getElementById('inputValue');
+        
+        if (type === "binToDec") {
+            label.innerText = "Nhập số nhị phân (chỉ gồm 0 và 1):";
+            input.placeholder = "Ví dụ: 1010";
+        } else {
+            label.innerText = "Nhập số thập phân (số nguyên dương):";
+            input.placeholder = "Ví dụ: 26";
+        }
+        document.getElementById('result').innerText = "Kết quả hiển thị tại đây";
+        document.getElementById('result').className = "result-box";
+        input.value = "";
+    }
+
+    function convert() {
+        const inputType = document.getElementById('inputType').value;
+        const inputValue = document.getElementById('inputValue').value.trim();
+        const resultBox = document.getElementById('result');
+
+        if (inputValue === "") {
+            resultBox.innerHTML = "<span class='error'>Vui lòng nhập giá trị cần chuyển đổi!</span>";
+            return;
+        }
+
+        if (inputType === "binToDec") {
+            // Kiểm tra tính hợp lệ của hệ nhị phân (chỉ chứa 0 và 1)
+            const binRegex = /^[01]+$/;
+            if (!binRegex.test(inputValue)) {
+                resultBox.innerHTML = "<span class='error'>Lỗi: Hệ nhị phân hợp lệ chỉ được chứa ký tự 0 và 1!</span>";
+                return;
+            }
+            
+            // Cách học thuật toán thủ công:
+            // let decimalValue = 0;
+            // for(let i = 0; i < inputValue.length; i++) {
+            //     decimalValue += parseInt(inputValue[inputValue.length - 1 - i]) * Math.pow(2, i);
+            // }
+            
+            // Dùng hàm tối ưu của JS:
+            const decimal = parseInt(inputValue, 2);
+            resultBox.innerHTML = `Kết quả hệ 10: <span class='success'>${decimal}</span>`;
+            
+        } else if (inputType === "decToBin") {
+            // Kiểm tra tính hợp lệ của hệ thập phân (chỉ chứa số từ 0-9)
+            const decRegex = /^[0-9]+$/;
+            if (!decRegex.test(inputValue)) {
+                resultBox.innerHTML = "<span class='error'>Lỗi: Vui lòng nhập một số nguyên dương hợp lệ!</span>";
+                return;
+            }
+            
+            // Cách học thuật toán thủ công:
+            // let num = parseInt(inputValue, 10);
+            // let binaryStr = "";
+            // while(num > 0) { binaryStr = (num % 2) + binaryStr; num = Math.floor(num / 2); }
+            
+            // Dùng hàm tối ưu của JS:
+            const decimalNum = parseInt(inputValue, 10);
+            const binary = decimalNum.toString(2);
+            resultBox.innerHTML = `Kết quả hệ 2: <span class='success'>${binary}</span>`;
+        }
+    }
+</script>
+
+</body>
+</html>
